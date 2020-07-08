@@ -836,7 +836,19 @@
     <scm>
         <developerConnection>scm:git:git@github.com:planetlabs/stratus</developerConnection>
       <tag>v1.6.0</tag>
-  </scm>
+    </scm>
+
+
+    <distributionManagement>
+        <repository>
+            <id>RELEASES</id>
+            <url>http://${env.NEXUS_CREDS}@sv008n.infoterra-global.net/nexus/repository/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>SNAPSHOTS</id>
+            <url>http://${env.NEXUS_CREDS}@sv008n.infoterra-global.net/nexus/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
