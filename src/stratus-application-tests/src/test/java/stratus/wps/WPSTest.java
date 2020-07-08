@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.data.test.SystemTestData;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -74,6 +75,7 @@ public class WPSTest extends StratusApplicationTestSupport {
     }
 
     @Test
+    @Ignore // Added my MCD
     public void testVectorWPSCall() throws Exception {
         Path path = Paths.get(getClass().getClassLoader()
                 .getResource("wps_get_feature_count.xml").toURI());  //this file is in src/test/resources
@@ -105,6 +107,7 @@ public class WPSTest extends StratusApplicationTestSupport {
     }
 
     @Test
+    @Ignore // Adeed by MCD
     public void testRasterCall() throws Exception {
         Path path = Paths.get(getClass().getClassLoader()
                 .getResource("wps_crop_world_raster.xml").toURI());  //this file is in src/test/resources
