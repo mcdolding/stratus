@@ -4,6 +4,7 @@
  */
 package stratus.controller;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import org.geoserver.ows.Dispatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ public class OwsController {
  
     private final Dispatcher dispatcher;
 
+    @Timed // Added by MCD
     @RequestMapping(path = {"/ows", "/*/ows", "/*/*/ows", "/wfs", "/*/wfs", "/*/*/wfs","/wfs/*", "/*/wfs/*", "/*/*/wfs/*", "/wms", "/*/wms", "/*/*/wms", "/wcs", "/*/wcs", "/*/*/wcs", "/wps", "/csw", "/*/wps", "/*/wps/*", "/*/*/wps/*", "/animate", "/kml", "/kml/*", "/kml/icon/**/*"})
     public void ows(HttpServletRequest request, HttpServletResponse response) throws Exception {
         dispatcher.handleRequest(request, response);
