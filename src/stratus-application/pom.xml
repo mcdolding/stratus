@@ -1036,13 +1036,8 @@
             </plugin>
 
             <plugin>
-                <!-- UPdated by MCD -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                -->
-                <groupId>org.jboss.redhat-fuse</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>7.5.0.fuse-sb2-750029-redhat-00003</version>
                 <configuration>
                     <classifier>exec</classifier>
                     <executable>true</executable>

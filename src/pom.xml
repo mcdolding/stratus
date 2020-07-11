@@ -884,18 +884,6 @@
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.jboss.redhat-fuse</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <version>7.5.0.fuse-sb2-750029-redhat-00003</version>
-            </plugin>
         </plugins>
 
     </build>
