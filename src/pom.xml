@@ -851,6 +851,18 @@
     </distributionManagement>
 
     <build>
+
+        <!-- Added by MCD not sure if we need this -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jboss.redhat-fuse</groupId>
+                    <artifactId>fabric8-maven-plugin</artifactId>
+                    <version>7.5.0.fuse-sb2-750029-redhat-00003</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -872,7 +884,20 @@
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jboss.redhat-fuse</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <version>7.5.0.fuse-sb2-750029-redhat-00003</version>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>
