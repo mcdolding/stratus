@@ -49,6 +49,9 @@ management:
     git:
       mode: "full"
 
+# Added by MCD to pick up redis in OPenshift environment
+redis-host: ${oi.redis.service.host}
+
 stratus:
   admin-enabled: true
   proxy-base-url: ${proxybaseurl:}
