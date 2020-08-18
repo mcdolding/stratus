@@ -49,27 +49,9 @@
         <module>stratus-redis-core</module>
         <module>stratus-redis-resource-store</module>
         <module>stratus-extras</module>
+        <module>stratus-application-tests</module>
         <module>stratus-wps</module>
     </modules>
-
-    <!--
-         Added by MCD to allow faster builds
-         use -Dfast to build without slow integration tests
-    -->
-    <profiles>
-        <profile>
-            <activation>
-                <property>
-                    <name>!fast</name>
-                </property>
-            </activation>
-
-            <id>applicationTests</id>
-            <modules>
-                <module>stratus-application-tests</module>
-            </modules>
-        </profile>
-    </profiles>
 
     <properties>
         <revision>${project.version}</revision>

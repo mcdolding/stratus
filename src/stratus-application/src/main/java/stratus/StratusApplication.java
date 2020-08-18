@@ -4,6 +4,7 @@
  */
 package stratus;
 
+import com.airbus.oneinsight.common.logging.http.LoggingHttpConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.rest.RestConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -11,10 +12,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
 import stratus.commons.beanfactory.FilteringBeanDefinitionLoader;
 
 
@@ -43,6 +41,7 @@ import stratus.commons.beanfactory.FilteringBeanDefinitionLoader;
                 + "!beanClass:org.geoserver.logging.LoggingInitializer"         //Logging handled differently by BSE
 },
         reader = FilteringBeanDefinitionLoader.class)
+@Import(LoggingHttpConfig.class)
 public class StratusApplication {
 
     private static final String GEOWEBCACHE_CACHE_DIR = "GEOWEBCACHE_CACHE_DIR";

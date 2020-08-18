@@ -547,6 +547,13 @@
     </pluginRepositories>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.airbus.oneinsight.common</groupId>
+            <artifactId>oi-logging-http</artifactId>
+            <version>1.24</version>
+        </dependency>
+
         <!-- necessary for jndi data sources -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
