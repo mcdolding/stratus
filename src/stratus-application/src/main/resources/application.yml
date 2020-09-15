@@ -21,7 +21,7 @@ logging:
     stratus.redis.geoserver.RedisGeoServerLoader: INFO
     stratus.cache: DEBUG
     org.springframework.boot.web.embedded.tomcat.TomcatWebServer: INFO
-    com.airbus.oneinsight.common.logging.http: INFO
+    com.airbus.oneinsight.common.logging.http: DEBUG
     org.geowebcache.s3: DEBUG
 
 
@@ -57,6 +57,8 @@ management:
   trace:
     http:
       enabled: true
+      include: AUTHORIZATION_HEADER, PRINCIPAL, REMOTE_ADDRESS, REQUEST_HEADERS, RESPONSE_HEADERS, SESSION_ID, TIME_TAKEN
+
 
 # Added by MCD to log REST requests
 common:
@@ -117,9 +119,13 @@ stratus:
     access-key: #optional if there is an Amazon credential chain external to Stratus
     secret-key: #optional if there is an Amazon credential chain external to Stratus
 
+
+
 spring:
   profiles:
     active: lettuce-manual
+  activemq:
+    broker-url: ${broker.amq.tcp.port:tcp://localhost:61616}  # Added by MCD report request usage
   aop:
     auto: false
   freemarker:
