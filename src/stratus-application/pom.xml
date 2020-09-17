@@ -552,7 +552,7 @@
         <dependency>
             <groupId>com.airbus.oneinsight.common</groupId>
             <artifactId>oi-logging-http</artifactId>
-            <version>1.28</version>
+            <version>1.29</version>
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>

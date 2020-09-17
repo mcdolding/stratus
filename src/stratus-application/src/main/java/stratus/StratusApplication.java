@@ -9,12 +9,17 @@ import com.airbus.oneinsight.common.logging.http.LoggingHttpConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.rest.RestConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.trace.http.HttpExchangeTracer;
+import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
+import org.springframework.boot.actuate.web.trace.servlet.HttpTraceFilter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.*;
+import org.springframework.core.Ordered;
 import stratus.commons.beanfactory.FilteringBeanDefinitionLoader;
 
 
@@ -81,18 +86,10 @@ public class StratusApplication {
 
     // Added by MCD
     // When we log http request details if there is no Content-Length response header then calculate one.
-    // This is to supprt reporting requirements
+    // This is to support reporting requirements using HttpTrace
     @Bean
     ContentLengthServletFilter contentLengthServletFilter() {
         return new ContentLengthServletFilter();
-    }
-    @Bean
-    public FilterRegistrationBean contentLengthServletFilterReg() {
-        FilterRegistrationBean registration = new  FilterRegistrationBean();
-        registration.setFilter(contentLengthServletFilter());
-        registration.setOrder(1);
-        registration.addUrlPatterns("/ows", "/*/ows", "/*/*/ows", "/wfs", "/*/wfs", "/*/*/wfs","/wfs/*", "/*/wfs/*", "/*/*/wfs/*", "/wms", "/*/wms", "/*/*/wms", "/wcs", "/*/wcs", "/*/*/wcs", "/wps", "/csw", "/*/wps", "/*/wps/*", "/*/*/wps/*", "/animate", "/kml", "/kml/*", "/kml/icon/**/*");
-        return registration;
     }
 
 }
