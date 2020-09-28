@@ -6,6 +6,7 @@ package stratus;
 
 import com.airbus.oneinsight.common.logging.http.ContentLengthServletFilter;
 import com.airbus.oneinsight.common.logging.http.LoggingHttpConfig;
+import com.airbus.oneinsight.common.utilsservlet.GetCapabilitiesResponseRewriter;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.rest.RestConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -90,6 +91,13 @@ public class StratusApplication {
     @Bean
     ContentLengthServletFilter contentLengthServletFilter() {
         return new ContentLengthServletFilter();
+    }
+
+    // Added by MCD
+    // We need to ensure tht GetCapabilies reposnses are rewritten to contain api key
+    @Bean
+    GetCapabilitiesResponseRewriter getCapabilitiesResponseRewriter() {
+        return new GetCapabilitiesResponseRewriter();
     }
 
 }

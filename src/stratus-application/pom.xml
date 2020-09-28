@@ -533,6 +533,8 @@
         <docker.baseImage>amazonlinux-gdal-py-java11:latest</docker.baseImage>
         <docker.imageName>gsstratus/stratus</docker.imageName>
         <stratusMainClass>stratus.StratusApplication</stratusMainClass>
+        <!-- Added by MCD -->
+        <oi-common.version>1.31</oi-common.version>
     </properties>
 
     <pluginRepositories>
@@ -552,7 +554,20 @@
         <dependency>
             <groupId>com.airbus.oneinsight.common</groupId>
             <artifactId>oi-logging-http</artifactId>
-            <version>1.29</version>
+            <version>${oi-common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Added by MCD to rewrite GetCapabilities requests -->
+        <dependency>
+            <groupId>com.airbus.oneinsight.common</groupId>
+            <artifactId>oi-utils-servlet</artifactId>
+            <version>${oi-common.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>
