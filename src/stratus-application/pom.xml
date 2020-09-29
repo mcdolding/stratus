@@ -533,6 +533,8 @@
         <docker.baseImage>amazonlinux-gdal-py-java11:latest</docker.baseImage>
         <docker.imageName>gsstratus/stratus</docker.imageName>
         <stratusMainClass>stratus.StratusApplication</stratusMainClass>
+        <!-- Added by MCD -->
+        <oi-common.version>1.32</oi-common.version>
     </properties>
 
     <pluginRepositories>
@@ -548,10 +550,30 @@
 
     <dependencies>
 
+        <!-- Added by MCD to log http requests -->
         <dependency>
             <groupId>com.airbus.oneinsight.common</groupId>
             <artifactId>oi-logging-http</artifactId>
-            <version>1.24</version>
+            <version>${oi-common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Added by MCD to rewrite GetCapabilities requests -->
+        <dependency>
+            <groupId>com.airbus.oneinsight.common</groupId>
+            <artifactId>oi-utils-servlet</artifactId>
+            <version>${oi-common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- necessary for jndi data sources -->
@@ -569,6 +591,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -596,30 +624,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
--->
-<!--
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
