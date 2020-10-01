@@ -6,9 +6,12 @@ package stratus;
 
 import com.airbus.oneinsight.common.logging.http.ContentLengthServletFilter;
 import com.airbus.oneinsight.common.logging.http.LoggingHttpConfig;
+import com.airbus.oneinsight.common.logging.http.LoggingUtils;
+import com.airbus.oneinsight.common.logging.http.RequestBodyLoggingServletFilter;
 import com.airbus.oneinsight.common.utilsservlet.GetCapabilitiesResponseRewriter;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.rest.RestConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.trace.http.HttpExchangeTracer;
 import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
@@ -98,6 +101,13 @@ public class StratusApplication {
     @Bean
     GetCapabilitiesResponseRewriter getCapabilitiesResponseRewriter() {
         return new GetCapabilitiesResponseRewriter();
+    }
+
+    // Added by MCD
+    // Capture POST and PUT request body to be used the
+    @Bean
+    RequestBodyLoggingServletFilter requestBodyLoggingServletFilter(@Autowired LoggingUtils LoggingUtils) {
+        return new RequestBodyLoggingServletFilter(LoggingUtils);
     }
 
 }
