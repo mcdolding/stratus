@@ -44,7 +44,8 @@ public class StratusRestSecurityConfiguration extends WebSecurityConfigurerAdapt
         http.headers()
                 .cacheControl().and()
                 .contentTypeOptions().and()
-                .frameOptions().sameOrigin()
+//              .frameOptions().sameOrigin() removed by MCD so can be specified in environment
+                .frameOptions().disable()
                 .httpStrictTransportSecurity().and()
                 .xssProtection();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
