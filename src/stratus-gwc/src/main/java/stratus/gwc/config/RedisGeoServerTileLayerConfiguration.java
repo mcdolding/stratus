@@ -74,7 +74,7 @@ public class RedisGeoServerTileLayerConfiguration extends BaseRedisConfiguration
         if (ws != null && !layerName.startsWith(ws.getName() + ":")) {
             layerName = ws.getName() + ":" + layerName;
         }
-        Optional<GeoServerTileLayerRedisInfoImpl> tl = tlRepository.findById(layerName);
+        Optional<GeoServerTileLayerRedisInfoImpl> tl = Optional.ofNullable(tlRepository.findByName(layerName)); // tlRepository.findById(layerName); Bug fix by MCD for WMS service
         if (tl.isPresent()) {
             return Optional.ofNullable(resolve(tl.get()));
         } else {
