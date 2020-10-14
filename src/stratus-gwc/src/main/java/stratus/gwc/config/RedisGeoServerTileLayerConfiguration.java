@@ -74,19 +74,7 @@ public class RedisGeoServerTileLayerConfiguration extends BaseRedisConfiguration
         if (ws != null && !layerName.startsWith(ws.getName() + ":")) {
             layerName = ws.getName() + ":" + layerName;
         }
-        ///////////////////////////////////////////////////
-        // Amended by MCD
-        // Bizarely the findById and findByName dont appear to work.
-        // For now we use findAll and loop through the results
-        // Optional<GeoServerTileLayerRedisInfoImpl> tl = Optional.ofNullable(tlRepository.findById(layerName);
-        Optional<GeoServerTileLayerRedisInfoImpl> tl = Optional.empty();
-        for (GeoServerTileLayerRedisInfoImpl layer: tlRepository.findAll() ) {
-            if (layer.getName(). equals(layerName)) {
-                tl = Optional.of(layer);
-                break;
-            }
-        }
-        ///////////////////////////////////////////////////
+        Optional<GeoServerTileLayerRedisInfoImpl> tl = tlRepository.findById(layerName);
         if (tl.isPresent()) {
             return Optional.ofNullable(resolve(tl.get()));
         } else {
