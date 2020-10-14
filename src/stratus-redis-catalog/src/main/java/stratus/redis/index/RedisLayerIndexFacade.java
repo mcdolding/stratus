@@ -315,7 +315,9 @@ public class RedisLayerIndexFacade {
                     new RedisMultiQueryCachingEngine.EmptyCatalogCacheVisitor());
         }
         queryEngine.execute(cacheProperties.getUseParallelQueries());
-        return queryEngine.loadIntoCache(cachingCatalogFacade, null, true);
+        // Changed by MCD "complete" caching appears to mess iup GWS WMS service.
+        // return queryEngine.loadIntoCache(cachingCatalogFacade, null, true);
+        return queryEngine.loadIntoCache(cachingCatalogFacade, null, false);
     }
 
     /**
