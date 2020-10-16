@@ -70,44 +70,30 @@ common:
         - path: "/geoserver/gwc/service/wms"
           requestBody: true
           metric:
-            timeThreshold: 60000
+            timeThreshold: 1000
             sizeThreshold: 481280
             name: wms
 
         - path: "/geoserver/gwc/service/wmts"
           requestBody: true
           metric:
-            timeThreshold: 30000
-            sizeThreshold: 481280
+            timeThreshold: 500
+            # sizeThreshold: undefined defaults to Integer.MAX_VALUE
             name: wmts
 
         - path: "/geoserver/wfs"
           requestBody: true
           metric:
-            timeThreshold: 60000
+            timeThreshold: 1000
             sizeThreshold: 481280
             name: wfs
 
         - path: "/geoserver/*/wfs"
           requestBody: true
           metric:
-            timeThreshold: 60000
+            timeThreshold: 1000
             sizeThreshold: 481280
             name: wfs
-
-        - path: "/geoserver/wms"
-          requestBody: true
-          metric:
-            timeThreshold: 60000
-            sizeThreshold: 481280
-            name: wms
-
-        - path: "/geoserver/*/wms"
-          requestBody: true
-          metric:
-            timeThreshold: 60000
-            sizeThreshold: 481280
-            name: wms
 
         - path: "/**"
           requestBody: true
