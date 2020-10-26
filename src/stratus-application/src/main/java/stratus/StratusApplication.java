@@ -9,6 +9,7 @@ import com.airbus.oneinsight.common.logging.http.LoggingHttpConfig;
 import com.airbus.oneinsight.common.logging.http.LoggingUtils;
 import com.airbus.oneinsight.common.logging.http.RequestBodyLoggingServletFilter;
 import com.airbus.oneinsight.common.utilsservlet.GetCapabilitiesResponseRewriter;
+import com.airbus.oneinsight.common.utilsservlet.WMSTimeRequestRewriter;
 import com.airbus.oneinsight.common.utilsservlet.XFrameOptionsFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.rest.RestConfiguration;
@@ -82,6 +83,15 @@ public class StratusApplication {
         }
     }
 
+    // Added by JP
+    // This will rewrite request parameters for any request containing the
+    // TIME parameter such that a list of layers applicable to the given interval
+    // is provided to the the upstream and the TIME parameter is removed.
+    @Bean
+    WMSTimeRequestRewriter wmsTimeRequestRewriter() {
+        return new WMSTimeRequestRewriter();
+    }
+    
     // Added by MCD
     // When we log http request details if there is no Content-Length response header then calculate one.
     // This is to support reporting requirements using HttpTrace
