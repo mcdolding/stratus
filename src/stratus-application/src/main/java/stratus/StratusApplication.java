@@ -87,10 +87,10 @@ public class StratusApplication {
     // This will rewrite request parameters for any request containing the
     // TIME parameter such that a list of layers applicable to the given interval
     // is provided to the the upstream and the TIME parameter is removed.
-    @Bean
-    WMSTimeRequestRewriter wmsTimeRequestRewriter() {
-        return new WMSTimeRequestRewriter();
-    }
+    // @Bean
+    // WMSTimeRequestRewriter wmsTimeRequestRewriter() {
+    //     return new WMSTimeRequestRewriter();
+    // }
     
     // Added by MCD
     // When we log http request details if there is no Content-Length response header then calculate one.
