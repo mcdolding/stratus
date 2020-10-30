@@ -8,9 +8,7 @@ import com.airbus.oneinsight.common.logging.http.ContentLengthServletFilter;
 import com.airbus.oneinsight.common.logging.http.LoggingHttpConfig;
 import com.airbus.oneinsight.common.logging.http.LoggingUtils;
 import com.airbus.oneinsight.common.logging.http.RequestBodyLoggingServletFilter;
-import com.airbus.oneinsight.common.utilsservlet.GetCapabilitiesResponseRewriter;
-import com.airbus.oneinsight.common.utilsservlet.WMSTimeRequestRewriter;
-import com.airbus.oneinsight.common.utilsservlet.XFrameOptionsFilter;
+import com.airbus.oneinsight.common.utilsservlet.*;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.rest.RestConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,7 @@ import stratus.commons.beanfactory.FilteringBeanDefinitionLoader;
                 + "!beanClass:org.geoserver.logging.LoggingInitializer"         //Logging handled differently by BSE
 },
         reader = FilteringBeanDefinitionLoader.class)
-@Import(LoggingHttpConfig.class)
+@Import({LoggingHttpConfig.class, GetCapabilitiesConfig.class})
 public class StratusApplication {
 
     private static final String GEOWEBCACHE_CACHE_DIR = "GEOWEBCACHE_CACHE_DIR";
@@ -103,8 +101,8 @@ public class StratusApplication {
     // Added by MCD
     // We need to ensure tht GetCapabilies reposnses are rewritten to contain api key
     @Bean
-    GetCapabilitiesResponseRewriter getCapabilitiesResponseRewriter() {
-        return new GetCapabilitiesResponseRewriter();
+    GetCapabilitiesResponseRewriter getCapabilitiesResponseRewriter(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
+        return new GetCapabilitiesResponseRewriter(getCapabiliesProperties);
     }
 
     // Added by MCD

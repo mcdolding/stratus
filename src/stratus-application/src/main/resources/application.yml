@@ -62,6 +62,10 @@ management:
 
 # Added by MCD to log REST requests
 common:
+  servlet:
+    getcapabilities:
+      external-server: oi-stratus-apicast-production-oi-dev.apps.midgard.airbusds-cint.com
+      internal-server: oi-stratus:8080
   logging:
     http:
       enabled: true
