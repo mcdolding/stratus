@@ -19,6 +19,7 @@ import stratus.redis.geoserver.info.AbstractServiceInfoRedisImpl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of {@link WMSInfo} used for serialization to Redis
@@ -38,7 +39,10 @@ public class WMSInfoRedisImpl extends AbstractServiceInfoRedisImpl implements Se
     HashSet<String> getFeatureInfoMimeTypes = new HashSet<String>();
 
     boolean getMapMimeTypeCheckingEnabled;
-    HashSet<String> getMapMimeTypes = new HashSet<String>();
+    //  MCD Amended to enable persistence of mime types.
+    // Needs to match the type used in WMSInfoImpl
+    //    HashSet<String> getMapMimeTypes = new HashSet<String>();
+    Set<String> getMapMimeTypes = new HashSet<String>();
 
     boolean dynamicStylingDisabled;
 
