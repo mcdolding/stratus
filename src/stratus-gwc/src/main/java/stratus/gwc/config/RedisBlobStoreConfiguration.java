@@ -5,6 +5,7 @@
 package stratus.gwc.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.geoserver.gwc.blobstore.readonlyfile.ReadOnlyFileBlobStoreInfo;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.BlobStoreConfigurationListener;
 import org.geowebcache.config.BlobStoreInfo;
@@ -18,10 +19,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stratus.gwc.redis.data.BlobStoreInfoRedisImpl;
-import stratus.gwc.redis.data.FileBlobStoreInfoRedisImpl;
-import stratus.gwc.redis.data.MBTilesInfoRedisImpl;
-import stratus.gwc.redis.data.S3BlobStoreInfoRedisImpl;
+import stratus.gwc.redis.data.*;
 import stratus.gwc.redis.repository.BlobStoreRepository;
 import stratus.redis.config.RedisConfigProps;
 import stratus.redis.repository.RedisRepositoryImpl;
@@ -214,6 +212,7 @@ public class RedisBlobStoreConfiguration extends BaseRedisConfiguration implemen
     @Override
     public boolean canSave(BlobStoreInfo blobStore) {
         return Objects.nonNull(blobStore.getName()) && (
+                    blobStore instanceof ReadOnlyFileBlobStoreInfo || // Added by MCD to support ReadOnlyFileBlobStoreInfo
                     blobStore instanceof FileBlobStoreInfo ||
                     blobStore instanceof S3BlobStoreInfo ||
                     blobStore instanceof MbtilesInfo
@@ -243,6 +242,9 @@ public class RedisBlobStoreConfiguration extends BaseRedisConfiguration implemen
     protected BlobStoreInfoRedisImpl<?> unresolve(BlobStoreInfo blobStore) {
         if(blobStore instanceof FileBlobStoreInfo) {
             return new FileBlobStoreInfoRedisImpl((FileBlobStoreInfo) blobStore);
+        } else if(blobStore instanceof ReadOnlyFileBlobStoreInfo) {
+            // Added by MCD to support ReadOnlyFileBlobStoreInfo
+            return new ReadOnlyFileBlobStoreInfoRedisImpl((ReadOnlyFileBlobStoreInfo) blobStore);
         } else if(blobStore instanceof S3BlobStoreInfo){
             return new S3BlobStoreInfoRedisImpl((S3BlobStoreInfo) blobStore);
         } else if(blobStore instanceof MbtilesInfo) {
