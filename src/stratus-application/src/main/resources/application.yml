@@ -118,7 +118,10 @@ common:
             sizeThreshold: 481280
             name: wms
 
-        - path: "/**"
+        - path: "/geoserver/rest/**"
+          requestBody: true
+
+        - path: "/geoserver/gwc/rest/**"
           requestBody: true
 
 # Added by MCD to pick up redis in OPenshift environment
