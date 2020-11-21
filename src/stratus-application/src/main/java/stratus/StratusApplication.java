@@ -119,4 +119,12 @@ public class StratusApplication {
         return new XFrameOptionsFilter();
     }
 
+
+    // Added by MCD
+    // Used to rewrite single layer WMS GetMap requests directly to GWC WMS endpoint
+    @Bean
+    WMSGetMapRedirect wmsGetMapRequestRewriter() {
+        return new WMSGetMapRedirect();
+    }
+
 }
