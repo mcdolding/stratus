@@ -777,21 +777,6 @@
         <dependency>
             <groupId>org.geoserver</groupId>
             <artifactId>gs-platform</artifactId>
-            <!-- MCD Added to remove JAI libraries as we have installed native JAI -->
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.media</groupId>
-                    <artifactId>jai_core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.media</groupId>
-                    <artifactId>jai_codec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.media</groupId>
-                    <artifactId>jai_imageio</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>stratus</groupId>
@@ -1076,6 +1061,21 @@
                         <java.source>${maven.compiler.source}</java.source>
                         <java.target>${maven.compiler.target}</java.target>
                     </additionalProperties>
+                    <!-- MCD Added to remove JAI libraries as we have installed native JAI -->
+                    <excludes>
+                        <exclusion>
+                            <groupId>javax.media</groupId>
+                            <artifactId>jai_core</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>javax.media</groupId>
+                            <artifactId>jai_codec</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>javax.media</groupId>
+                            <artifactId>jai_imageio</artifactId>
+                        </exclusion>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
