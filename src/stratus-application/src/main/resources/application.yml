@@ -63,7 +63,13 @@ management:
 # Added by MCD to log REST requests
 common:
   servlet:
+    getmap:
+      enableWmsForwardingToGwc: true
     getcapabilities:
+      gwcWms:
+        urlPath: "/geoserver/gwc/service/wms"
+        filePath: "/opt/geoserver/config/GetCapabilities.xml"
+
       external-server: oi-stratus-apicast-production-oi-dev.apps.midgard.airbusds-cint.com
       internal-server: oi-stratus:8080
   logging:

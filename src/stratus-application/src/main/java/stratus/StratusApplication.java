@@ -45,7 +45,7 @@ import stratus.commons.beanfactory.FilteringBeanDefinitionLoader;
                 + "!beanClass:org.geoserver.logging.LoggingInitializer"         //Logging handled differently by BSE
 },
         reader = FilteringBeanDefinitionLoader.class)
-@Import({LoggingHttpConfig.class, GetCapabilitiesConfig.class})
+@Import({LoggingHttpConfig.class, ServletConfig.class})
 public class StratusApplication {
 
     private static final String GEOWEBCACHE_CACHE_DIR = "GEOWEBCACHE_CACHE_DIR";
@@ -86,8 +86,8 @@ public class StratusApplication {
     // TIME parameter such that a list of layers applicable to the given interval
     // is provided to the the upstream and the TIME parameter is removed.
     @Bean
-    WMSTimeRequestRewriter wmsTimeRequestRewriter() {
-        return new WMSTimeRequestRewriter();
+    WmsTimeRequestRewriter wmsTimeRequestRewriter() {
+        return new WmsTimeRequestRewriter();
     }
     
     // Added by MCD
@@ -99,7 +99,7 @@ public class StratusApplication {
     }
 
     // Added by MCD
-    // We need to ensure tht GetCapabilies reposnses are rewritten to contain api key
+    // We need to ensure tht GetCapabilies responses are rewritten to contain api key
     @Bean
     GetCapabilitiesResponseRewriter getCapabilitiesResponseRewriter(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
         return new GetCapabilitiesResponseRewriter(getCapabiliesProperties);
@@ -123,8 +123,14 @@ public class StratusApplication {
     // Added by MCD
     // Used to rewrite single layer WMS GetMap requests directly to GWC WMS endpoint
     @Bean
-    WMSGetMapRedirect wmsGetMapRequestRewriter() {
-        return new WMSGetMapRedirect();
+    WmsGetMapRedirect wmsGetMapRequestRewriter(@Autowired GetMapProperties getMapProperties) {
+        return new WmsGetMapRedirect(getMapProperties);
     }
 
+    // Added by MCD
+    // Used to source GWC WMS GetCapabilities from file.
+    @Bean
+    WmsGetCapabilitiesFromFile wmsGetCapabilitiesFromFile(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
+        return new WmsGetCapabilitiesFromFile(getCapabiliesProperties);
+    }
 }
