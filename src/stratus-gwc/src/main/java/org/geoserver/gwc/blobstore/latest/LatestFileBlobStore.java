@@ -82,6 +82,7 @@ public class LatestFileBlobStore extends ReadOnlyFileBlobStore  {
         try {
             BufferedImage merged = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = merged.createGraphics();
+            ImageIO.setUseCache(false);
             for (File tile : tiles) {
                 BufferedImage image = ImageIO.read(tile);
                 g.setComposite(AlphaComposite.SrcOver);
