@@ -17,6 +17,9 @@
     <!-- Added by MCD -->
     <bean class="org.geoserver.gwc.blobstore.readonlyfile.ReadOnlyFileBlobStoreType" />
 
+    <!-- Added by MCD -->
+    <bean class="org.geoserver.gwc.blobstore.latest.LatestFileBlobStoreType" />
+
     <bean id="wmtsCapabilitiesProvider" class="org.geoserver.gwc.wmts.WMTSCapabilitiesProvider">
         <constructor-arg ref="geoServer"/>
     </bean>

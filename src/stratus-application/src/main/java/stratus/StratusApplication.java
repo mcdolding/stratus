@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.geoserver.rest.RestConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.trace.http.HttpExchangeTracer;
+import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
+import org.springframework.boot.actuate.web.trace.servlet.HttpTraceFilter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ApplicationContext;
@@ -81,36 +84,22 @@ public class StratusApplication {
         }
     }
 
-    // Added by JP
+    // Added by MCD
     // This will rewrite request parameters for any request containing the
     // TIME parameter such that a list of layers applicable to the given interval
     // is provided to the the upstream and the TIME parameter is removed.
     @Bean
-    WmsTimeRequestRewriter wmsTimeRequestRewriter() {
-        return new WmsTimeRequestRewriter();
-    }
-    
-    // Added by MCD
-    // When we log http request details if there is no Content-Length response header then calculate one.
-    // This is to support reporting requirements using HttpTrace
-    @Bean
-    ContentLengthServletFilter contentLengthServletFilter() {
-        return new ContentLengthServletFilter();
+    WmsTimeRequestRewriteFilter wmsTimeRequestRewriterFilter() {
+        return new WmsTimeRequestRewriteFilter();
     }
 
     // Added by MCD
     // We need to ensure tht GetCapabilies responses are rewritten to contain api key
     @Bean
-    GetCapabilitiesResponseRewriter getCapabilitiesResponseRewriter(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
-        return new GetCapabilitiesResponseRewriter(getCapabiliesProperties);
+    GetCapabilitiesResponseRewriterFilter getCapabilitiesResponseRewriterFilter(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
+        return new GetCapabilitiesResponseRewriterFilter(getCapabiliesProperties);
     }
 
-    // Added by MCD
-    // Capture POST and PUT request body to be used the
-    @Bean
-    RequestBodyLoggingServletFilter requestBodyLoggingServletFilter(@Autowired LoggingUtils LoggingUtils) {
-        return new RequestBodyLoggingServletFilter(LoggingUtils);
-    }
 
     // Added by MCD
     // Used to set XFrameOptions response header according to property common.servlet.xframe.policy
@@ -123,14 +112,45 @@ public class StratusApplication {
     // Added by MCD
     // Used to rewrite single layer WMS GetMap requests directly to GWC WMS endpoint
     @Bean
-    WmsGetMapRedirect wmsGetMapRequestRewriter(@Autowired GetMapProperties getMapProperties) {
-        return new WmsGetMapRedirect(getMapProperties);
+    WmsGetMapRedirectFilter wmsGetMapRequestRewriterFilter(@Autowired GetMapProperties getMapProperties) {
+        return new WmsGetMapRedirectFilter(getMapProperties);
     }
 
     // Added by MCD
     // Used to source GWC WMS GetCapabilities from file.
     @Bean
-    WmsGetCapabilitiesFromFile wmsGetCapabilitiesFromFile(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
-        return new WmsGetCapabilitiesFromFile(getCapabiliesProperties);
+    WmsGetCapabilitiesFromFileFilter wmsGetCapabilitiesFromFileFilter(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
+        return new WmsGetCapabilitiesFromFileFilter(getCapabiliesProperties);
     }
+
+    @Bean
+    HttpTraceFilter httpTraceFilter(@Autowired HttpTraceRepository repository, @Autowired HttpExchangeTracer tracer) {
+        HttpTraceFilter httpTraceFilter = new HttpTraceFilter(repository, tracer);
+        // By default Springs HttpTraceFilter order is very low Ordered.LOWEST_PRECEDENCE - 10
+        // We want it higher so that we can log all requests and get better vales for timeTaken
+        httpTraceFilter.setOrder(FilterOrder.HTTP_TRACE_FILTER);
+        return  httpTraceFilter;
+    }
+
+    // Added by MCD
+    // Used by HttpTraceFilter to artificially create a Content-Length response header where there is none.
+    // This is to support logging/reporting requirements using HttpTrace
+    @Bean
+    ContentLengthServletFilter contentLengthServletFilter() {
+        ContentLengthServletFilter contentLengthServletFilter = new ContentLengthServletFilter();
+        // We run this just after HttpTraceFilter to capture the most accurate content length
+        contentLengthServletFilter.setOrder(FilterOrder.HTTP_TRACE_FILTER +1);
+        return contentLengthServletFilter;
+    }
+
+    // Added by MCD
+    // Used by HttpTraceFilter to capture POST and PUT request body.
+    // This is to support logging/reporting requirements using HttpTrace
+    @Bean
+    RequestBodyLoggingServletFilter requestBodyLoggingServletFilter(@Autowired LoggingUtils loggingUtils) {
+        RequestBodyLoggingServletFilter requestBodyLoggingServletFilter = new RequestBodyLoggingServletFilter(loggingUtils);
+        requestBodyLoggingServletFilter.setOrder(FilterOrder.HTTP_TRACE_FILTER +1);
+        return requestBodyLoggingServletFilter;
+    }
+
 }

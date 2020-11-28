@@ -5,6 +5,7 @@
 package stratus.gwc.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.geoserver.gwc.blobstore.latest.LatestFileBlobStoreInfo;
 import org.geoserver.gwc.blobstore.readonlyfile.ReadOnlyFileBlobStoreInfo;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.BlobStoreConfigurationListener;
@@ -212,6 +213,7 @@ public class RedisBlobStoreConfiguration extends BaseRedisConfiguration implemen
     @Override
     public boolean canSave(BlobStoreInfo blobStore) {
         return Objects.nonNull(blobStore.getName()) && (
+                    blobStore instanceof LatestFileBlobStoreInfo || // Added by MCD to support LatestFileBlobStoreInfo
                     blobStore instanceof ReadOnlyFileBlobStoreInfo || // Added by MCD to support ReadOnlyFileBlobStoreInfo
                     blobStore instanceof FileBlobStoreInfo ||
                     blobStore instanceof S3BlobStoreInfo ||
@@ -242,6 +244,9 @@ public class RedisBlobStoreConfiguration extends BaseRedisConfiguration implemen
     protected BlobStoreInfoRedisImpl<?> unresolve(BlobStoreInfo blobStore) {
         if(blobStore instanceof FileBlobStoreInfo) {
             return new FileBlobStoreInfoRedisImpl((FileBlobStoreInfo) blobStore);
+        } else if(blobStore instanceof LatestFileBlobStoreInfo) {
+            // Added by MCD to support LatestFileBlobStoreInfo
+            return new LatestFileBlobStoreInfoRedisImpl((LatestFileBlobStoreInfo) blobStore);
         } else if(blobStore instanceof ReadOnlyFileBlobStoreInfo) {
             // Added by MCD to support ReadOnlyFileBlobStoreInfo
             return new ReadOnlyFileBlobStoreInfoRedisImpl((ReadOnlyFileBlobStoreInfo) blobStore);

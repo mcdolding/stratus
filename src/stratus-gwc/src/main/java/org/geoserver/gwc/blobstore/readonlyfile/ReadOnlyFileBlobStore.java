@@ -56,11 +56,11 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
     private static Log log =
             LogFactory.getLog(ReadOnlyFileBlobStore.class);
 
-    private final String path;
+    protected final String path;
 
-    private final BlobStoreListenerList listeners = new BlobStoreListenerList();
+    protected final BlobStoreListenerList listeners = new BlobStoreListenerList();
 
-    private FilePathGenerator pathGenerator;
+    protected FilePathGenerator pathGenerator;
 
     private static Resource blankTile = null;
 
@@ -105,7 +105,8 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
 
     @Override
     public boolean delete(String layerName) throws StorageException {
-        throw new UnsupportedOperationException("Store is readonly");
+        log.info(String.format("Ignoring attempt to delete readonly file blob for layer %s", layerName));
+        return true;
     }
 
     @Override
@@ -190,7 +191,7 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
      * Load GWC blank tile resource.
      * @return
      */
-    private static Resource getBlankTile()  {
+    protected static Resource getBlankTile()  {
         if (blankTile != null) {
             return blankTile;
         }
@@ -216,7 +217,7 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
         throw new UnsupportedOperationException("Store is readonly");
     }
 
-    private File getFileHandleTile(TileObject stObj, boolean create) throws StorageException {
+    protected File getFileHandleTile(TileObject stObj, boolean create) throws StorageException {
         final MimeType mimeType;
         try {
             mimeType = MimeType.createFromFormat(stObj.getBlobFormat());

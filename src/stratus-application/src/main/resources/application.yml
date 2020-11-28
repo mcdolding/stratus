@@ -64,7 +64,7 @@ management:
 common:
   servlet:
     getmap:
-      enableWmsForwardingToGwc: true
+      enableWmsForwardingToGwc: false
     getcapabilities:
       gwcWms:
         urlPath: "/geoserver/gwc/service/wms"
