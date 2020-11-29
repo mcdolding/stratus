@@ -100,7 +100,6 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
 
     /** Destroy method for Spring */
     public void destroy() {
-
     }
 
     @Override
@@ -226,11 +225,13 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
             throw new RuntimeException(me);
         }
 
-        final File tilePath = pathGenerator.tilePath(stObj, mimeType);
+        File tilePath = pathGenerator.tilePath(stObj, mimeType);
 
-        if (create) {
-            File parent = tilePath.getParentFile();
-            mkdirs(parent, stObj);
+        /**
+         * If the client requests "png" then we will serve tiles png8 tiles instead.
+         */
+        if (tilePath.getAbsolutePath().endsWith("png")) {
+            tilePath = new File (tilePath.getAbsolutePath() + "8");
         }
 
         return tilePath;
