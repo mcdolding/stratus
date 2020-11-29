@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geoserver.gwc.blobstore.readonlyfile.ReadOnlyFileBlobStore;
 import org.geowebcache.config.ConfigurationException;
 import org.geowebcache.io.ByteArrayResource;
+import org.geowebcache.io.FileResource;
 import org.geowebcache.io.Resource;
 import org.geowebcache.storage.DefaultStorageFinder;
 import org.geowebcache.storage.StorageException;
@@ -70,7 +71,14 @@ public class LatestFileBlobStore extends ReadOnlyFileBlobStore  {
      */
     public boolean get (TileObject stObj) throws StorageException {
         List<File> files = getMatchingFiles(stObj);
-        Resource resource = !files.isEmpty() ? mergeTiles(files) : getBlankTile();
+        Resource resource = null;
+        if (files.isEmpty()) {
+            resource =  getBlankTile();;
+        } else if (files.size() == 1) {
+            resource =  new FileResource(files.get(0));
+        } else {
+            resource = mergeTiles(files);
+        }
         stObj.setBlob(resource);
         stObj.setCreated(resource.getLastModified());
         stObj.setBlobSize((int) resource.getSize());
