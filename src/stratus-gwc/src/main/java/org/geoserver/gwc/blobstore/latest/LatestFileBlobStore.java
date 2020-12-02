@@ -112,9 +112,9 @@ public class LatestFileBlobStore extends ReadOnlyFileBlobStore  {
 
     List<File> getMatchingFiles(TileObject stObj) throws StorageException {
         List<File> files = new ArrayList<>();
-        File template = getFileHandleTile(stObj, false);
+        File template = getFileHandleTile(stObj);
         for (String replacement : replacements) {
-            File file = new File(template.getAbsolutePath().replaceAll(match, replacement));
+            File file = mockTile(new File(template.getAbsolutePath().replaceAll(match, replacement)));
             if(file.exists()) {
                 files.add(file);
             }

@@ -17,6 +17,7 @@ package org.geoserver.gwc.blobstore.readonlyfile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geowebcache.GeoWebCacheDispatcher;
+import org.geowebcache.GeoWebCacheExtensions;
 import org.geowebcache.config.ConfigurationException;
 import org.geowebcache.filter.parameters.ParametersUtils;
 import org.geowebcache.io.ByteArrayResource;
@@ -64,6 +65,9 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
 
     private static Resource blankTile = null;
 
+    // Directory containing tile to server for testing purposes
+    private File[] mockBlobStoreTiles;
+
     public ReadOnlyFileBlobStore(DefaultStorageFinder defStoreFinder)
             throws StorageException, ConfigurationException {
         this(defStoreFinder.getDefaultPath());
@@ -95,6 +99,8 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
         CompositeBlobStore.checkSuitability(rootPath, exists, empty);
 
         getBlankTile();
+
+        mockBlobStoreTiles = getMockBlobStoreTiles();
         
     }
 
@@ -178,7 +184,7 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
      * @return true will always return a tile
      */
     public boolean get(TileObject stObj) throws StorageException {
-        File fh = getFileHandleTile(stObj, false);
+        File fh = mockTile(getFileHandleTile(stObj));
         Resource resource = fh.exists() ? new FileResource(fh) : getBlankTile();
         stObj.setBlob(resource);
         stObj.setCreated(resource.getLastModified());
@@ -216,7 +222,8 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
         throw new UnsupportedOperationException("Store is readonly");
     }
 
-    protected File getFileHandleTile(TileObject stObj, boolean create) throws StorageException {
+    protected File getFileHandleTile(TileObject stObj) throws StorageException {
+
         final MimeType mimeType;
         try {
             mimeType = MimeType.createFromFormat(stObj.getBlobFormat());
@@ -227,14 +234,49 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
 
         File tilePath = pathGenerator.tilePath(stObj, mimeType);
 
-        /**
-         * If the client requests "png" then we will serve tiles png8 tiles instead.
-         */
+
+        // If the client requests "png" then we will serve tiles png8 tiles instead
         if (tilePath.getAbsolutePath().endsWith("png")) {
             tilePath = new File (tilePath.getAbsolutePath() + "8");
         }
 
         return tilePath;
+
+    }
+
+    /**
+     * Replace tile with a mock tile if mock tiles have been provided.
+     * @param tile the tile to mock.
+     * @return
+     */
+    protected File mockTile(File tile) {
+
+        if (mockBlobStoreTiles != null && mockBlobStoreTiles.length > 0) {
+            File mockTile = mockBlobStoreTiles[Math.abs(tile.hashCode()) % mockBlobStoreTiles.length];
+            return mockTile.exists() ? mockTile : tile;
+        }
+        return tile;
+    }
+
+    /**
+     * Files to be used for testing.
+     * @return
+     */
+    File[] getMockBlobStoreTiles() {
+        String mockBlobStrorePath = GeoWebCacheExtensions.getProperty("MOCK_BLOB_STORE_DIR");
+        File mockBlobStroreDir  = mockBlobStrorePath != null ? new File(mockBlobStrorePath) : null;
+        if (mockBlobStroreDir != null &&
+                mockBlobStroreDir.exists() &&
+                mockBlobStroreDir.isDirectory() &&
+                mockBlobStroreDir.canRead()) {
+                String [] tileNames = mockBlobStroreDir.list((dir, name) -> name.endsWith(".png8"));
+                if (tileNames.length > 0) {
+                    return Arrays.stream(tileNames)
+                            .map(name -> new File(mockBlobStroreDir, name))
+                            .toArray(File[]::new);
+                }
+        }
+        return null;
     }
 
     public void clear() throws StorageException {
