@@ -35,10 +35,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A file blob store that assumes all tiles exists for where there is data coverage.
+ * A file blob store that will use pattern replacement of layer name to source and overlay multiple tiles.
+ *
+ * For example a "Latest" blob store with the following parameters:
+ *
+ * Param       | Value
+ *  ---------- | ---
+ * match       | LATEST
+ * replacement | PRE2020,AUG2020,SEP2020
+ *
+ * when applied to the layer CIR-50CM-GB-LATEST
+ *
+ * would look for tiles in the following layers and superpose them:
+ *
+ * 1) CIR-50CM-GB-PRE2020
+ * 2) CIR-50CM-GB-AUG2020
+ * 3) CIR-50CM-GB-SEP2020
+ *
  * A bank tile will be returned if no tile is found in the underlying storage.
- * Tiles willnot be created.
+ * Tiles will not be created.
  * All delete methods are no longer supported to protect the underlying tiles from deletion.
+ * Mock tiles can be source by provding the env var MOCK_BLOB_STORE_DIR with a sub directory for particular layers.
  * @author mike.dolding
  */
 public class LatestFileBlobStore extends ReadOnlyFileBlobStore  {
@@ -114,7 +131,7 @@ public class LatestFileBlobStore extends ReadOnlyFileBlobStore  {
         List<File> files = new ArrayList<>();
         File template = getFileHandleTile(stObj);
         for (String replacement : replacements) {
-            File file = mockTile(new File(template.getAbsolutePath().replaceAll(match, replacement)));
+            File file = mockTile(new File(template.getAbsolutePath().replaceAll(match, replacement)), stObj.getLayerName());
             if(file.exists()) {
                 files.add(file);
             }

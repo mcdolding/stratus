@@ -27,6 +27,7 @@ import org.geowebcache.mime.MimeException;
 import org.geowebcache.mime.MimeType;
 import org.geowebcache.storage.*;
 import org.geowebcache.storage.blobstore.file.FilePathGenerator;
+import org.geowebcache.storage.blobstore.file.FilePathUtils;
 import org.geowebcache.util.FileUtils;
 import org.geowebcache.util.IOUtils;
 
@@ -48,8 +49,9 @@ import static org.geowebcache.storage.blobstore.file.FilePathUtils.filteredLayer
 /**
  * A file blob store that assumes all tiles exists for where there is data coverage.
  * A bank tile will be returned if no tile is found in the underlying storage.
- * Tiles willnot be created.
+ * Tiles will not be created.
  * All delete methods are no longer supported to protect the underlying tiles from deletion.
+ * Mock tiles can be source by provding the env var MOCK_BLOB_STORE_DIR with a sub directory for particular layers.
  * @author mike.dolding
  */
 public class ReadOnlyFileBlobStore  implements BlobStore {
@@ -65,8 +67,9 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
 
     private static Resource blankTile = null;
 
-    // Directory containing tile to server for testing purposes
-    private File[] mockBlobStoreTiles;
+    // The path to a directory to use source mock raster tiles.
+    // This directory must exist to turn on mocking
+    private File mockBlobStorePath;
 
     public ReadOnlyFileBlobStore(DefaultStorageFinder defStoreFinder)
             throws StorageException, ConfigurationException {
@@ -100,8 +103,9 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
 
         getBlankTile();
 
-        mockBlobStoreTiles = getMockBlobStoreTiles();
-        
+        // Path to where mock tiles are located
+        mockBlobStorePath =  initMockBlobStorePath();
+
     }
 
     /** Destroy method for Spring */
@@ -177,14 +181,14 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
     }
 
     /**
-     * Set the blob property of a TileObject.
      * Return the tile from the underlying store.
-     * If the the tile does not exist it will a blank tile.
+     * If the the tile does not exist it will return a blank tile.
+     * Note mock tiles returned if configured.
      * @param stObj the tile to load. Its setBlob() method will be called.
      * @return true will always return a tile
      */
     public boolean get(TileObject stObj) throws StorageException {
-        File fh = mockTile(getFileHandleTile(stObj));
+        File fh = mockTile(getFileHandleTile(stObj), stObj.getLayerName());
         Resource resource = fh.exists() ? new FileResource(fh) : getBlankTile();
         stObj.setBlob(resource);
         stObj.setCreated(resource.getLastModified());
@@ -246,14 +250,21 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
 
     /**
      * Replace tile with a mock tile if mock tiles have been provided.
+     * The directory examined for tiles will be {MOCK_BLOB_STORE_DIR}/layerName
      * @param tile the tile to mock.
-     * @return
+     * @param layerName the layer for which to return mock tiles (if they exist).
+     * @return tile
      */
-    protected File mockTile(File tile) {
-
-        if (mockBlobStoreTiles != null && mockBlobStoreTiles.length > 0) {
-            File mockTile = mockBlobStoreTiles[Math.abs(tile.hashCode()) % mockBlobStoreTiles.length];
-            return mockTile.exists() ? mockTile : tile;
+    protected File mockTile(File tile, String layerName) {
+        if (mockBlobStorePath != null) {
+            String filteredLayerName = FilePathUtils.filteredLayerName(layerName);
+            File mockDir = new File (mockBlobStorePath, filteredLayerName);
+            if (mockDir.exists() && mockDir.isDirectory() && mockDir.canRead()) {
+                String [] tileNames = mockDir.list((dir, name) -> name.endsWith(".png8"));
+                if (tileNames.length >0) {
+                    return new File(mockDir, tileNames[Math.abs(tile.hashCode()) % tileNames.length]);
+                }
+            }
         }
         return tile;
     }
@@ -262,21 +273,13 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
      * Files to be used for testing.
      * @return
      */
-    File[] getMockBlobStoreTiles() {
-        String mockBlobStrorePath = GeoWebCacheExtensions.getProperty("MOCK_BLOB_STORE_DIR");
-        File mockBlobStroreDir  = mockBlobStrorePath != null ? new File(mockBlobStrorePath) : null;
-        if (mockBlobStroreDir != null &&
-                mockBlobStroreDir.exists() &&
-                mockBlobStroreDir.isDirectory() &&
-                mockBlobStroreDir.canRead()) {
-                String [] tileNames = mockBlobStroreDir.list((dir, name) -> name.endsWith(".png8"));
-                if (tileNames.length > 0) {
-                    return Arrays.stream(tileNames)
-                            .map(name -> new File(mockBlobStroreDir, name))
-                            .toArray(File[]::new);
-                }
-        }
-        return null;
+    private File initMockBlobStorePath() {
+        String path = GeoWebCacheExtensions.getProperty("MOCK_BLOB_STORE_DIR");
+        File dir  = path != null ? new File(path) : null;
+        return (dir != null &&
+                dir.exists() &&
+                dir.isDirectory() &&
+                dir.canRead()) ? dir : null;
     }
 
     public void clear() throws StorageException {
