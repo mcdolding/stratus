@@ -66,34 +66,7 @@ common:
     getmap:
       enableWmsForwardingToGwc: true
       wmsForwardingLayers:
-        - AP-12CM5-GB-2020
-        - AP-12CM5-GB-LATEST
-        - AP-12CM5-GB-LATEST-WMS
-        - AP-12CM5-GB-PREJUNE2020
-        - AP-25CM-GB-2020
-        - AP-25CM-GB-LATEST
-        - AP-25CM-GB-LATEST-WMS
-        - AP-25CM-GB-PREJUNE2020
-        - CIR-50CM-GB-2020
-        - CIR-50CM-GB-LATEST
-        - CIR-50CM-GB-LATEST-WMS
-        - CIR-50CM-GB-PREJUNE2020
-        - DSM-2M-GB-2020
-        - DSM-2M-GB-LATEST
-        - DSM-2M-GB-LATEST-WMS
-        - DSM-2M-GB-PREJUNE2020
-        - DTM-5M-GB-2020
-        - DTM-5M-GB-LATEST
-        - DTM-5M-GB-LATEST-WMS
-        - DTM-5M-GB-PREJUNE2020
-        - TSR-2M-GB-2020
-        - TSR-2M-GB-LATEST
-        - TSR-2M-GB-LATEST-WMS
-        - TSR-2M-GB-PREJUNE2020
-        - TSR-5M-GB-2020
-        - TSR-5M-GB-LATEST
-        - TSR-5M-GB-LATEST-WMS
-        - TSR-5M-GB-PREJUNE2020
+        - "*"
     getcapabilities:
       gwcWms:
         urlPath: "/geoserver/gwc/service/wms"
