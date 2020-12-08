@@ -236,16 +236,7 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
             throw new RuntimeException(me);
         }
 
-        File tilePath = pathGenerator.tilePath(stObj, mimeType);
-
-
-        // If the client requests "png" then we will serve tiles png8 tiles instead
-        if (tilePath.getAbsolutePath().endsWith("png")) {
-            tilePath = new File (tilePath.getAbsolutePath() + "8");
-        }
-
-        return tilePath;
-
+        return pathGenerator.tilePath(stObj, mimeType);
     }
 
     /**

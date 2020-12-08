@@ -534,7 +534,7 @@
         <docker.imageName>gsstratus/stratus</docker.imageName>
         <stratusMainClass>stratus.StratusApplication</stratusMainClass>
         <!-- Added by MCD -->
-        <oi-common.version>1.63</oi-common.version>
+        <oi-common.version>1.64</oi-common.version>
 
     </properties>
 
