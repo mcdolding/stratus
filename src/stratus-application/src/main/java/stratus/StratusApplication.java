@@ -117,6 +117,13 @@ public class StratusApplication {
     }
 
     // Added by MCD
+    // Used to convert GetMap PNG request to PNG8 requests
+    @Bean
+    WmsPngToPng8Filter wmsPngToPng8Filter(@Autowired GetMapProperties getMapProperties) {
+        return new WmsPngToPng8Filter(getMapProperties);
+    }
+
+    // Added by MCD
     // Used to source GWC WMS GetCapabilities from file.
     @Bean
     WmsGetCapabilitiesFromFileFilter wmsGetCapabilitiesFromFileFilter(@Autowired GetCapabiliesProperties getCapabiliesProperties) {
