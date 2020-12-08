@@ -247,7 +247,11 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
      * @return tile
      */
     protected File mockTile(File tile, String layerName) {
+
         if (mockBlobStorePath != null) {
+            if (tile.exists()) {
+                return tile;
+            }
             String filteredLayerName = FilePathUtils.filteredLayerName(layerName);
             File mockDir = new File (mockBlobStorePath, filteredLayerName);
             if (mockDir.exists() && mockDir.isDirectory() && mockDir.canRead()) {
