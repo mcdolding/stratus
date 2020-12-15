@@ -80,8 +80,9 @@ public final class CatalogInfoConvert {
     
     public static final <T extends CatalogInfo> T toRedis(CatalogInfo info) {
         return convert(info, redisClass(info.getClass()));
+
     }
-    
+
     public static final <T extends CatalogInfo> T toTraditional(CatalogInfo info) {
         return convert(info, traditionalClass(info.getClass()));
     }
@@ -118,13 +119,19 @@ public final class CatalogInfoConvert {
         }
         
         BeanUtils.copyProperties(info, newInfo);
-        
-        //for featuretypeinfo set reverse relationship right with its attribute info's
-        if (clazz == FeatureTypeInfoImpl.class) {
-            for (AttributeTypeInfo ati : ((FeatureTypeInfo) newInfo).getAttributes()) {
-                ati.setFeatureType((FeatureTypeInfo) newInfo);
-            }
-        }
+
+// Removed by MCD
+// Setting up the reverse relationship between AttributeTypeInfo and FeatureTypeInfo causes a circular reference
+// which results in a StackOverFlow error when performing a WMS GetCapabilities request.
+// The circular reference is in hashCode() which is use by List<Layer>.contains(layer)
+// See http://sv162.infoterra-global.com:8080/browse/APGB-738
+//
+//        //for featuretypeinfo set reverse relationship right with its attribute info's
+//        if (clazz == FeatureTypeInfoImpl.class) {
+//            for (AttributeTypeInfo ati : ((FeatureTypeInfo) newInfo).getAttributes()) {
+//                ati.setFeatureType((FeatureTypeInfo) newInfo);
+//            }
+//        }
         
         return newInfo;
     }
