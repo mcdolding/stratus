@@ -50,7 +50,7 @@
                 url: 'exec',
                 type: "POST",
                 data: command,
-                contentTypes: "text/plain",
+                contentType: "text/plain",
                 success: function (response) {
                     for (var line in response) {
                         term.echo(response[line]);
