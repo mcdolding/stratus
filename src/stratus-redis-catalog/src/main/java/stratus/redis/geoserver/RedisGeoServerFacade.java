@@ -7,6 +7,7 @@ package stratus.redis.geoserver;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.catalog.Info;
+import org.geoserver.catalog.Keyword;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.ModificationProxy;
 import org.geoserver.catalog.impl.ResolvingProxy;
@@ -306,8 +307,9 @@ public class RedisGeoServerFacade implements GeoServerFacade {
                 }
             }
         }
+        // MCD Ensure we have at least one keyword in Service GetCapabilities XML
+        redisService.getKeywords().add(new Keyword("Airbus"));
         return proxifyService(redisService, clazz);
-
     }
 
     @Override
