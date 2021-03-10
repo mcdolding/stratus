@@ -20,6 +20,9 @@
     <!-- Added by MCD -->
     <bean class="org.geoserver.gwc.blobstore.latest.LatestFileBlobStoreType" />
 
+    <!-- Added by MCD -->
+    <bean class="org.geoserver.gwc.blobstore.pngagnostic.PngAgnosticFileBlobStoreType" />
+
     <bean id="wmtsCapabilitiesProvider" class="org.geoserver.gwc.wmts.WMTSCapabilitiesProvider">
         <constructor-arg ref="geoServer"/>
     </bean>

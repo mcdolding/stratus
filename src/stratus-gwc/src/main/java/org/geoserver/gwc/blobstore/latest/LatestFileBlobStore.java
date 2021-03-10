@@ -16,6 +16,7 @@ package org.geoserver.gwc.blobstore.latest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geoserver.gwc.blobstore.pngagnostic.PngAgnosticFile;
 import org.geoserver.gwc.blobstore.readonlyfile.ReadOnlyFileBlobStore;
 import org.geowebcache.config.ConfigurationException;
 import org.geowebcache.io.ByteArrayResource;
@@ -131,7 +132,8 @@ public class LatestFileBlobStore extends ReadOnlyFileBlobStore  {
         List<File> files = new ArrayList<>();
         File template = getFileHandleTile(stObj);
         for (String replacement : replacements) {
-            File file = mockTile(new File(template.getAbsolutePath().replaceAll(match, replacement)), stObj.getLayerName());
+            File file = PngAgnosticFile.getPngOrPng8File(
+                    mockTile(new File(template.getAbsolutePath().replaceAll(match, replacement)), stObj.getLayerName()));
             if(file.exists()) {
                 files.add(file);
             }
