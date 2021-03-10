@@ -16,6 +16,7 @@ package org.geoserver.gwc.blobstore.readonlyfile;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geoserver.gwc.blobstore.pngagnostic.PngAgnosticFile;
 import org.geowebcache.GeoWebCacheDispatcher;
 import org.geowebcache.GeoWebCacheExtensions;
 import org.geowebcache.config.ConfigurationException;
@@ -188,7 +189,7 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
      * @return true will always return a tile
      */
     public boolean get(TileObject stObj) throws StorageException {
-        File fh = mockTile(getFileHandleTile(stObj), stObj.getLayerName());
+        File fh = PngAgnosticFile.getPngOrPng8File(mockTile(getFileHandleTile(stObj), stObj.getLayerName()));
         Resource resource = fh.exists() ? new FileResource(fh) : getBlankTile();
         stObj.setBlob(resource);
         stObj.setCreated(resource.getLastModified());
@@ -255,7 +256,7 @@ public class ReadOnlyFileBlobStore  implements BlobStore {
             String filteredLayerName = FilePathUtils.filteredLayerName(layerName);
             File mockDir = new File (mockBlobStorePath, filteredLayerName);
             if (mockDir.exists() && mockDir.isDirectory() && mockDir.canRead()) {
-                String [] tileNames = mockDir.list((dir, name) -> name.endsWith(".png8"));
+                String [] tileNames = mockDir.list((dir, name) -> name.endsWith(".png") || name.endsWith(".png8"));
                 if (tileNames.length >0) {
                     return new File(mockDir, tileNames[Math.abs(tile.hashCode()) % tileNames.length]);
                 }

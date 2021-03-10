@@ -6,6 +6,7 @@ package stratus.gwc.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.geoserver.gwc.blobstore.latest.LatestFileBlobStoreInfo;
+import org.geoserver.gwc.blobstore.pngagnostic.PngAgnosticFileBlobStoreInfo;
 import org.geoserver.gwc.blobstore.readonlyfile.ReadOnlyFileBlobStoreInfo;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.BlobStoreConfigurationListener;
@@ -215,6 +216,7 @@ public class RedisBlobStoreConfiguration extends BaseRedisConfiguration implemen
         return Objects.nonNull(blobStore.getName()) && (
                     blobStore instanceof LatestFileBlobStoreInfo || // Added by MCD to support LatestFileBlobStoreInfo
                     blobStore instanceof ReadOnlyFileBlobStoreInfo || // Added by MCD to support ReadOnlyFileBlobStoreInfo
+                    blobStore instanceof PngAgnosticFileBlobStoreInfo || // Added by MCD to support PngAgnosticFileBlobStoreInfo
                     blobStore instanceof FileBlobStoreInfo ||
                     blobStore instanceof S3BlobStoreInfo ||
                     blobStore instanceof MbtilesInfo
@@ -250,6 +252,9 @@ public class RedisBlobStoreConfiguration extends BaseRedisConfiguration implemen
         } else if(blobStore instanceof ReadOnlyFileBlobStoreInfo) {
             // Added by MCD to support ReadOnlyFileBlobStoreInfo
             return new ReadOnlyFileBlobStoreInfoRedisImpl((ReadOnlyFileBlobStoreInfo) blobStore);
+        }  else if(blobStore instanceof PngAgnosticFileBlobStoreInfo) {
+            // Added by MCD to support PngAgnosticFileBlobStoreInfo
+            return new PngAgnosticFileBlobStoreInfoRedisImpl((PngAgnosticFileBlobStoreInfo) blobStore);
         } else if(blobStore instanceof S3BlobStoreInfo){
             return new S3BlobStoreInfoRedisImpl((S3BlobStoreInfo) blobStore);
         } else if(blobStore instanceof MbtilesInfo) {
