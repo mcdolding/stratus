@@ -244,17 +244,17 @@ public class RedisBlobStoreConfiguration extends BaseRedisConfiguration implemen
      * @return
      */
     protected BlobStoreInfoRedisImpl<?> unresolve(BlobStoreInfo blobStore) {
-        if(blobStore instanceof FileBlobStoreInfo) {
-            return new FileBlobStoreInfoRedisImpl((FileBlobStoreInfo) blobStore);
-        } else if(blobStore instanceof LatestFileBlobStoreInfo) {
+        if(blobStore instanceof LatestFileBlobStoreInfo) {
             // Added by MCD to support LatestFileBlobStoreInfo
             return new LatestFileBlobStoreInfoRedisImpl((LatestFileBlobStoreInfo) blobStore);
         } else if(blobStore instanceof ReadOnlyFileBlobStoreInfo) {
             // Added by MCD to support ReadOnlyFileBlobStoreInfo
             return new ReadOnlyFileBlobStoreInfoRedisImpl((ReadOnlyFileBlobStoreInfo) blobStore);
         }  else if(blobStore instanceof PngAgnosticFileBlobStoreInfo) {
-            // Added by MCD to support PngAgnosticFileBlobStoreInfo
+            // Added by MCD to support PngAgnosticFileBlobStoreInfo. Must come before FileBlobStoreInfo (as it inherots)
             return new PngAgnosticFileBlobStoreInfoRedisImpl((PngAgnosticFileBlobStoreInfo) blobStore);
+        } else if(blobStore instanceof FileBlobStoreInfo) {
+            return new FileBlobStoreInfoRedisImpl((FileBlobStoreInfo) blobStore);
         } else if(blobStore instanceof S3BlobStoreInfo){
             return new S3BlobStoreInfoRedisImpl((S3BlobStoreInfo) blobStore);
         } else if(blobStore instanceof MbtilesInfo) {
